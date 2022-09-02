@@ -2317,6 +2317,31 @@ class Hello
       Console.WriteLine("Should print 0.0100282888709122");
       Console.WriteLine(balancedBattle.AttackLossChances[12]);
 
+      /* Compare true random and balanced blitz, with the chance of
+      	 losing 37 out of 37 troops when attacking a territory with 8 troops */
+      roundConfig = RoundConfig.Default;
+      battleConfig = new BattleConfig(37, 8, 0);
+      battle = BattleCache.Get(roundConfig, battleConfig);
+      battle.Calculate();
+      balancedBattle = new BalancedBattleInfo(battle, BalanceConfig.Default);
+      balancedBattle.ApplyBalance();
+      Console.WriteLine("True Dice (chance to lose 37 v 8)");
+      Console.WriteLine(battle.AttackLossChances[37]);
+      Console.WriteLine("... which is a 'one in X' chance or 1 in:");
+      Console.WriteLine(1/battle.AttackLossChances[37]);
+      Console.WriteLine("Balanced Dice");
+      Console.WriteLine(balancedBattle.AttackLossChances[37]);
+
+
+      /* from their support site comment on 38 vs 8 */
+      var rc02 = RoundConfig.Default;
+      var wc02 = WinChanceCache.Get(1000, rc02, null);
+      wc02.Calculate();
+      Console.WriteLine("Chance to win 38 v 8");
+      Console.WriteLine("(by my xls should be 0.999997269276864)");
+      Console.WriteLine((wc02.WinChances[38, 8]));
+
+
       /* Find the win chance for attacking 50 troops with 50 troops */
       roundConfig = RoundConfig.Default;
       var winChanceInfo = WinChanceCache.Get(1000, roundConfig, null);
